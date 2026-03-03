@@ -1,0 +1,67 @@
+<div class="container">
+  <!-- SECCIÓN FORMULARIO -->
+  <div class="section form-section">
+    <h2>✏️ Agregar Pago</h2>
+    <form (ngSubmit)="agregarPago()" class="form-group">
+      <input 
+        type="text" 
+        [(ngModel)]="nuevoPago.nombre" 
+        name="nombre" 
+        placeholder="Nombre del pago" 
+        required>
+      <input 
+        type="text" 
+        [(ngModel)]="nuevoPago.descripcion" 
+        name="descripcion" 
+        placeholder="Descripción (opcional)">
+      <input 
+        type="number" 
+        [(ngModel)]="nuevoPago.monto" 
+        name="monto" 
+        placeholder="Monto" 
+        required>
+      <input 
+        type="date" 
+        [(ngModel)]="nuevoPago.fecha" 
+        name="fecha" 
+        required>
+      <button type="submit">Agregar Pago</button>
+    </form>
+  </div>
+
+  <!-- SECCIÓN LISTA -->
+  <div class="section list-section">
+    <h2>📋 Lista de Pagos</h2>
+    <ul *ngIf="pagos.length > 0; else noPagos">
+      <li *ngFor="let pago of pagos">
+        <div class="pago-info">
+          <div class="pago-nombre">{{ pago.nombre }}</div>
+          <div class="pago-meta">
+            <div class="pago-meta-item">
+              <span class="pago-meta-label">Monto:</span>
+              <span class="pago-monto">${{ pago.monto }}</span>
+            </div>
+            <div class="pago-meta-item">
+              <span class="pago-meta-label">Fecha:</span>
+              <span>{{ pago.fecha }}</span>
+            </div>
+            <span class="status-badge" [ngClass]="pago.estado">{{ pago.estado }}</span>
+          </div>
+        </div>
+        <div class="pago-actions">
+          <button class="btn btn-secondary" (click)="cambiarEstado(pago)">
+            Cambiar Estado
+          </button>
+          <button class="btn btn-danger" (click)="eliminarPago(pago.id)">
+            Eliminar
+          </button>
+        </div>
+      </li>
+    </ul>
+    <ng-template #noPagos>
+      <p style="text-align: center; color: #7f8c8d; padding: 20px;">
+        No hay pagos registrados. ¡Agrega uno para comenzar!
+      </p>
+    </ng-template>
+  </div>
+</div>

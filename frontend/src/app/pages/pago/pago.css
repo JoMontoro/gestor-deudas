@@ -1,0 +1,299 @@
+:host {
+  display: block;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #3498db;
+  display: inline-block;
+}
+
+/* FORMULARIO */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+  flex: 1;
+  min-width: 140px;
+  padding: 10px 12px;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
+  outline: none;
+  border-color: #3498db;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+button[type="submit"] {
+  background: linear-gradient(135deg, #2f9e44 0%, #27863a 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(47, 158, 68, 0.3);
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(47, 158, 68, 0.4);
+  background: linear-gradient(135deg, #27863a 0%, #1f6430 100%);
+}
+
+button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+hr {
+  border: none;
+  border-top: 2px solid #ecf0f1;
+  margin: 0;
+}
+
+/* LISTA DE PAGOS */
+.list-section {
+  padding: 24px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+
+li {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-left: 5px solid #3498db;
+  border: 1px solid #ecf0f1;
+  border-left: 5px solid #3498db;
+  padding: 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+li:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left-color: #2980b9;
+}
+
+.pago-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pago-nombre {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 1.05rem;
+}
+
+.pago-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  flex-wrap: wrap;
+}
+
+.pago-meta-item {
+  display: flex;
+  gap: 4px;
+}
+
+.pago-meta-label {
+  font-weight: 600;
+  color: #34495e;
+}
+
+.pago-monto {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #27ae60;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.pendiente {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.status-badge.pagado {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.pago-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: #3498db;
+  color: white;
+  box-shadow: 0 2px 6px rgba(52, 152, 219, 0.3);
+}
+
+.btn-secondary:hover {
+  background: #2980b9;
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.4);
+}
+
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .section {
+    padding: 16px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  .form-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  input[type="date"] {
+    min-width: 100%;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+  }
+
+  li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pago-actions {
+    width: 100%;
+  }
+
+  .pago-meta {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  :host {
+    padding: 10px;
+  }
+
+  .section {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  .pago-meta {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .btn {
+    flex: 1;
+    min-width: 80px;
+  }
+}
