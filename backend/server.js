@@ -1,70 +1,62 @@
+const path = require('path');
 const express = require('express');
-const mysql = require('mysql2');
 const cors = require('cors');
 
+require('dotenv').config({ path: path.resolve(__dirname, '.env.local') });
+require('dotenv').config();
+
 const app = express();
+const pagos = require('./api/pagos');
+const health = require('./api/health');
+
+const PUERTO = Number(process.env.PORT) || 3000;
+
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'gestor_pagos',
-  port: 3309
+app.get('/', (req, res) => {
+  res.json({
+    message: 'API de pagos (desarrollo local)',
+    endpoints: {
+      pagos: '/api/pagos',
+      health: '/api/health',
+    },
+  });
 });
 
-db.connect(err => {
-  if (err) {
-    console.error('Error conectando a MySQL:', err.message || err);
-  } else {
-    console.log('Conectado a MySQL');
+// Se reutilizan los mismos handlers que Vercel despliega, montando con app.use
+// (no con app.get/post) para conservar el prefijo /api dentro de req.url.
+app.use((req, res, next) => {
+  if (req.url.split('?')[0] === '/api/health' || req.url.startsWith('/api/health?')) {
+    return health(req, res);
   }
+  if (req.url.split('?')[0].startsWith('/api/pagos')) {
+    return pagos(req, res);
+  }
+  next();
 });
 
-
-// 🔹 GET
-app.get('/pagos', (req, res) => {
-  db.query('SELECT * FROM pagos', (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(result);
-  });
+app.use((req, res) => {
+  res.status(404).json({ error: `Ruta no encontrada: ${req.method} ${req.originalUrl}` });
 });
 
-// 🔹 POST
-app.post('/pagos', (req, res) => {
-  const { nombre, descripcion, monto, fecha, estado } = req.body;
+app.use((err, req, res, next) => {
+  console.error('[server] error no controlado:', err);
+  res.status(500).json({ error: err.message || 'Error interno del servidor.' });
+});
 
-  db.query(
-    'INSERT INTO pagos (nombre, descripcion, monto, fecha, estado) VALUES (?, ?, ?, ?, ?)',
-    [nombre, descripcion, monto, fecha, estado],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: 'Pago agregado' });
+if (require.main === module) {
+  app.listen(PUERTO, () => {
+    console.log(`Servidor corriendo en http://localhost:${PUERTO}`);
+    console.log(`  GET    http://localhost:${PUERTO}/api/pagos`);
+    console.log(`  GET    http://localhost:${PUERTO}/api/health`);
+
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
+      console.warn('');
+      console.warn('AVISO: faltan SUPABASE_URL y/o SUPABASE_KEY.');
+      console.warn('Copia backend/.env.example a backend/.env.local y rellénalo.');
     }
-  );
-});
-
-// 🔹 DELETE
-app.delete('/pagos/:id', (req, res) => {
-  db.query('DELETE FROM pagos WHERE id = ?', [req.params.id], (err) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'Pago eliminado' });
   });
-});
+}
 
-// 🔹 UPDATE
-app.put('/pagos/:id', (req, res) => {
-  db.query(
-    'UPDATE pagos SET estado = ? WHERE id = ?',
-    [req.body.estado, req.params.id],
-    (err) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: 'Pago actualizado' });
-    }
-  );
-});
-
-app.listen(3000, () => {
-  console.log('Servidor corriendo en http://localhost:3000');
-});
+module.exports = app;

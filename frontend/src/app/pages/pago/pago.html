@@ -1,45 +1,84 @@
 <div class="container">
+  <!-- ERROR GLOBAL -->
+  <div class="alert alert-error" *ngIf="error() as mensaje">
+    <div class="alert-body">
+      <span class="alert-icon">⚠️</span>
+      <div>
+        <strong>No se pudo completar la operación</strong>
+        <p class="alert-text">{{ mensaje }}</p>
+      </div>
+    </div>
+    <div class="alert-actions">
+      <button type="button" class="btn btn-ghost" (click)="dismissError()">Cerrar</button>
+      <button type="button" class="btn btn-secondary" (click)="cargarPagos()">Reintentar</button>
+    </div>
+  </div>
+
+  <div class="alert alert-ok" *ngIf="!error() && aviso() as mensajeOk">
+    <span class="alert-icon">✅</span>
+    <span class="alert-text">{{ mensajeOk }}</span>
+    <button type="button" class="btn btn-ghost" (click)="aviso.set(null)">Cerrar</button>
+  </div>
+
   <!-- SECCIÓN FORMULARIO -->
   <div class="section form-section">
     <h2>✏️ Agregar Pago</h2>
-    <form (ngSubmit)="agregarPago()" class="form-group">
-      <input 
-        type="text" 
-        [(ngModel)]="nuevoPago.nombre" 
-        name="nombre" 
-        placeholder="Nombre del pago" 
+    <form (ngSubmit)="agregarPago()" #formulario="ngForm" class="form-group">
+      <input
+        type="text"
+        [(ngModel)]="nuevoPago.nombre"
+        name="nombre"
+        placeholder="Nombre del pago"
+        maxlength="255"
         required>
-      <input 
-        type="text" 
-        [(ngModel)]="nuevoPago.descripcion" 
-        name="descripcion" 
-        placeholder="Descripción (opcional)">
-      <input 
-        type="number" 
-        [(ngModel)]="nuevoPago.monto" 
-        name="monto" 
-        placeholder="Monto" 
+      <input
+        type="text"
+        [(ngModel)]="nuevoPago.descripcion"
+        name="descripcion"
+        placeholder="Descripción (opcional)"
+        maxlength="2000">
+      <input
+        type="number"
+        [(ngModel)]="nuevoPago.monto"
+        name="monto"
+        placeholder="Monto"
+        min="0.01"
+        step="0.01"
         required>
-      <input 
-        type="date" 
-        [(ngModel)]="nuevoPago.fecha" 
-        name="fecha" 
+      <input
+        type="date"
+        [(ngModel)]="nuevoPago.fecha"
+        name="fecha"
         required>
-      <button type="submit">Agregar Pago</button>
+      <button type="submit" [disabled]="guardando() || formulario.invalid">
+        {{ guardando() ? 'Guardando…' : 'Agregar Pago' }}
+      </button>
     </form>
   </div>
 
   <!-- SECCIÓN LISTA -->
   <div class="section list-section">
     <h2>📋 Lista de Pagos</h2>
-    <ul *ngIf="pagos.length > 0; else noPagos">
-      <li *ngFor="let pago of pagos">
+
+    <div class="list-meta" *ngIf="pagos().length > 0">
+      <span>{{ pagos().length }} pago(s)</span>
+      <span class="list-meta-total">Pendiente total: ${{ totalPendiente() | number: '1.2-2' }}</span>
+    </div>
+
+    <div class="loading" *ngIf="cargando()">
+      <div class="spinner"></div>
+      <span>Cargando pagos…</span>
+    </div>
+
+    <ul *ngIf="!cargando() && pagos().length > 0">
+      <li *ngFor="let pago of pagos(); trackBy: trackById">
         <div class="pago-info">
           <div class="pago-nombre">{{ pago.nombre }}</div>
+          <div class="pago-descripcion" *ngIf="pago.descripcion">{{ pago.descripcion }}</div>
           <div class="pago-meta">
             <div class="pago-meta-item">
               <span class="pago-meta-label">Monto:</span>
-              <span class="pago-monto">${{ pago.monto }}</span>
+              <span class="pago-monto">${{ pago.monto | number: '1.2-2' }}</span>
             </div>
             <div class="pago-meta-item">
               <span class="pago-meta-label">Fecha:</span>
@@ -49,18 +88,19 @@
           </div>
         </div>
         <div class="pago-actions">
-          <button class="btn btn-secondary" (click)="cambiarEstado(pago)">
-            Cambiar Estado
+          <button type="button" class="btn btn-secondary" (click)="cambiarEstado(pago)">
+            Marcar como {{ pago.estado === 'pagado' ? 'pendiente' : 'pagado' }}
           </button>
-          <button class="btn btn-danger" (click)="eliminarPago(pago.id)">
+          <button type="button" class="btn btn-danger" (click)="eliminarPago(pago.id)">
             Eliminar
           </button>
         </div>
       </li>
     </ul>
+
     <ng-template #noPagos>
-      <p style="text-align: center; color: #7f8c8d; padding: 20px;">
-        No hay pagos registrados. ¡Agrega uno para comenzar!
+      <p class="empty" *ngIf="!cargando()">
+        {{ error() ? 'No se pudieron cargar los pagos.' : 'No hay pagos registrados. ¡Agrega uno para comenzar!' }}
       </p>
     </ng-template>
   </div>
